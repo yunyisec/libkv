@@ -15,9 +15,9 @@ before_install:
   - go get github.com/GeertJohan/fgt
 
 before_script:
-  - script/travis_consul.sh 0.6.3
-  - script/travis_etcd.sh 3.0.0
-  - script/travis_zk.sh 3.5.4-beta
+  - script/travis_consul.sh 1.9.0
+  - script/travis_etcd.sh 3.4.13
+  - script/travis_zk.sh 3.6.2
 
 script:
   - ./consul agent -server -bootstrap -advertise=127.0.0.1 -data-dir /tmp/consul -config-file=./config.json 1>/dev/null &

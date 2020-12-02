@@ -12,7 +12,7 @@ require (
 	github.com/samuel/go-zookeeper v0.0.0-20200724154423-2164a8ac840e
 	github.com/stretchr/testify v1.6.1
 	go.etcd.io/bbolt v1.3.5 // indirect
-	go.etcd.io/etcd v0.0.0-20201125193152-8a03d2e9614b
+	go.etcd.io/etcd v0.0.0-20200824191128-ae9734ed278b
 	go.uber.org/zap v1.16.0 // indirect
 	google.golang.org/genproto v0.0.0-20201201144952-b05cb90ed32e // indirect
 	google.golang.org/grpc v1.33.2 // indirect
