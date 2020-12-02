@@ -10,9 +10,9 @@ import (
 	"strings"
 	"time"
 
-	etcd "github.com/coreos/etcd/client"
 	"github.com/rpcxio/libkv"
 	"github.com/rpcxio/libkv/store"
+	etcd "go.etcd.io/etcd/client"
 )
 
 var (
