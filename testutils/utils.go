@@ -276,9 +276,9 @@ func testAtomicPut(t *testing.T, kv store.Store) {
 
 	// This CAS should fail, key exists.
 	pair.LastIndex = 6744
-	success, _, err = kv.AtomicPut(key, []byte("WORLDWORLD"), pair, nil)
-	assert.Error(t, err)
-	assert.False(t, success)
+	success, pair2, err := kv.AtomicPut(key, []byte("WORLDWORLD"), pair, nil)
+	assert.Error(t, err, pair2)
+	assert.False(t, success, pair2)
 }
 
 func testAtomicPutCreate(t *testing.T, kv store.Store) {

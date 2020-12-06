@@ -369,21 +369,32 @@ func (s *EtcdV3) AtomicPut(key string, value []byte, previous *store.KVPair, opt
 	var txresp *clientv3.TxnResponse
 	var err error
 	if previous == nil {
-		presp, err = s.client.Put(ctx, key, string(value), clientv3.WithLease(s.leaseID))
-		if presp != nil {
-			revision = presp.Header.GetRevision()
+		if exist, err := s.Exists(key); err != nil { // not atomicput
+			return false, nil, err
+		} else if !exist {
+			presp, err = s.client.Put(ctx, key, string(value))
+			if presp != nil {
+				revision = presp.Header.GetRevision()
+			}
+		} else {
+			return false, nil, store.ErrKeyExists
 		}
+
 	} else {
 
 		var cmps = []clientv3.Cmp{
-			clientv3.Compare(clientv3.Value("key"), "=", string(previous.Value)),
-			clientv3.Compare(clientv3.Version("key"), "=", int64(previous.LastIndex)),
+			clientv3.Compare(clientv3.Value(key), "=", string(previous.Value)),
+			clientv3.Compare(clientv3.Version(key), "=", int64(previous.LastIndex)),
 		}
 		txresp, err = s.client.Txn(ctx).If(cmps...).
 			Then(clientv3.OpPut(key, string(value))).
 			Commit()
 		if txresp != nil {
-			revision = txresp.Header.GetRevision()
+			if txresp.Succeeded {
+				revision = txresp.Header.GetRevision()
+			} else {
+				err = errors.New("key's version not matched!")
+			}
 		}
 	}
 	cancel()
@@ -408,20 +419,20 @@ func (s *EtcdV3) AtomicDelete(key string, previous *store.KVPair) (bool, error) 
 	var txresp *clientv3.TxnResponse
 	ctx, cancel := context.WithTimeout(context.Background(), s.timeout)
 	if previous == nil {
-		var dresp *clientv3.DeleteResponse
-		dresp, err = s.client.Delete(ctx, key)
-		deleted = len(dresp.PrevKvs) != 0
+		return false, errors.New("key's version info is needed!")
 	} else {
-		// dresp, err = s.client.Delete(ctx, key, clientv3.WithRev(int64(previous.LastIndex)))
-
 		var cmps = []clientv3.Cmp{
-			clientv3.Compare(clientv3.Value("key"), "=", string(previous.Value)),
-			clientv3.Compare(clientv3.Version("key"), "=", int64(previous.LastIndex)),
+			clientv3.Compare(clientv3.Value(key), "=", string(previous.Value)),
+			clientv3.Compare(clientv3.Version(key), "=", int64(previous.LastIndex)),
 		}
 		txresp, err = s.client.Txn(ctx).If(cmps...).
 			Then(clientv3.OpDelete(key)).
 			Commit()
+
 		deleted = txresp.Succeeded
+		if !deleted {
+			err = errors.New("conflicts!")
+		}
 	}
 	cancel()
 
