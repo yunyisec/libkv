@@ -4,17 +4,13 @@ import (
 	"context"
 	"errors"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/rpcxio/libkv"
 	"github.com/rpcxio/libkv/store"
 	"go.etcd.io/etcd/clientv3"
 	"go.etcd.io/etcd/clientv3/concurrency"
-)
-
-const (
-	// ETCDV3 backend
-	ETCDV3 store.Backend = "etcdv3"
 )
 
 const defaultTTL = 30
@@ -27,12 +23,14 @@ type EtcdV3 struct {
 	cfg            clientv3.Config
 	done           chan struct{}
 	startKeepAlive chan struct{}
-	ttl            int64
+
+	mu  sync.RWMutex
+	ttl int64
 }
 
 // Register registers etcd to libkv
 func Register() {
-	libkv.AddStore(ETCDV3, New)
+	libkv.AddStore(store.ETCDV3, New)
 }
 
 // New creates a new Etcd client given a list
@@ -101,7 +99,9 @@ func New(addrs []string, options *store.Config) (store.Store, error) {
 								time.Sleep(time.Second)
 								continue
 							}
+							s.mu.RLock()
 							err = s.grant(s.ttl)
+							s.mu.RUnlock()
 							if err != nil {
 								s.client.Close()
 								time.Sleep(time.Second)
@@ -154,7 +154,9 @@ func (s *EtcdV3) Put(key string, value []byte, options *store.WriteOptions) erro
 	if ttl == 0 {
 		ttl = defaultTTL
 	}
+	s.mu.Lock()
 	s.ttl = ttl
+	s.mu.Unlock()
 
 	// init leaseID
 	if s.leaseID == 0 {
@@ -333,7 +335,7 @@ func (s *EtcdV3) List(directory string) ([]*store.KVPair, error) {
 	kvpairs := make([]*store.KVPair, 0, len(resp.Kvs))
 
 	if len(resp.Kvs) == 0 {
-		return kvpairs, nil
+		return nil, store.ErrKeyNotFound
 	}
 
 	for _, kv := range resp.Kvs {

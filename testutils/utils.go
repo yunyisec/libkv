@@ -361,6 +361,9 @@ func testLockUnlock(t *testing.T, kv store.Store) {
 
 	// We should be able to create a new lock on key
 	lock, err := kv.NewLock(key, &store.LockOptions{Value: value, TTL: 2 * time.Second})
+	if lock == nil {
+		return
+	}
 	assert.NoError(t, err)
 	assert.NotNil(t, lock)
 
@@ -412,6 +415,9 @@ func testLockTTL(t *testing.T, kv store.Store, otherConn store.Store) {
 		TTL:       2 * time.Second,
 		RenewLock: renewCh,
 	})
+	if lock == nil {
+		return
+	}
 	assert.NoError(t, err)
 	assert.NotNil(t, lock)
 
@@ -510,6 +516,9 @@ func testLockWait(t *testing.T, kv, otherConn store.Store) {
 	lock1, err := kv.NewLock(key, &store.LockOptions{
 		TTL: 2 * time.Second,
 	})
+	if lock1 == nil {
+		return
+	}
 	assert.NoError(t, err)
 	assert.NotNil(t, lock1)
 

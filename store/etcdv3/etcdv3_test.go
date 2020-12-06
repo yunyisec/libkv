@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	client = "localhost:2379"
+	client = "localhost:4001"
 )
 
 func makeEtcdClient(t *testing.T) store.Store {
@@ -31,10 +31,10 @@ func makeEtcdClient(t *testing.T) store.Store {
 	return kv
 }
 
-func TestRegister(t *testing.T) {
+func TesttEtcdV3Register(t *testing.T) {
 	Register()
 
-	kv, err := libkv.NewStore(ETCDV3, []string{client}, nil)
+	kv, err := libkv.NewStore(store.ETCDV3, []string{client}, nil)
 	assert.NoError(t, err)
 	assert.NotNil(t, kv)
 
@@ -43,7 +43,7 @@ func TestRegister(t *testing.T) {
 	}
 }
 
-func TestEtcdStore(t *testing.T) {
+func TestEtcdV3Store(t *testing.T) {
 	kv := makeEtcdClient(t)
 	lockKV := makeEtcdClient(t)
 	ttlKV := makeEtcdClient(t)
