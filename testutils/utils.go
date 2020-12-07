@@ -150,7 +150,7 @@ func testWatch(t *testing.T, kv store.Store) {
 
 	// Update loop
 	go func() {
-		timeout := time.After(1 * time.Second)
+		timeout := time.After(3 * time.Second)
 		tick := time.Tick(250 * time.Millisecond)
 		for {
 			select {
