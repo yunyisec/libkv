@@ -7,8 +7,8 @@ else
 fi
 
 
-curl -L https://mirrors.huaweicloud.com/etcd/v$ETCD_VERSION/etcd-v$ETCD_VERSION-linux-amd64.tar.gz -o etcd-v$ETCD_VERSION-linux-amd64.tar.gz
+# curl -L https://mirrors.huaweicloud.com/etcd/v$ETCD_VERSION/etcd-v$ETCD_VERSION-linux-amd64.tar.gz -o etcd-v$ETCD_VERSION-linux-amd64.tar.gz
 
-# curl -L https://github.com/coreos/etcd/releases/download/v$ETCD_VERSION/etcd-v$ETCD_VERSION-linux-amd64.tar.gz -o etcd-v$ETCD_VERSION-linux-amd64.tar.gz
+curl -L https://github.com/coreos/etcd/releases/download/v$ETCD_VERSION/etcd-v$ETCD_VERSION-linux-amd64.tar.gz -o etcd-v$ETCD_VERSION-linux-amd64.tar.gz
 tar xzvf etcd-v$ETCD_VERSION-linux-amd64.tar.gz
 mv etcd-v$ETCD_VERSION-linux-amd64 etcd
