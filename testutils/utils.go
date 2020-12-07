@@ -150,8 +150,8 @@ func testWatch(t *testing.T, kv store.Store) {
 
 	// Update loop
 	go func() {
-		timeout := time.After(3 * time.Second)
-		tick := time.Tick(250 * time.Millisecond)
+		timeout := time.After(4 * time.Second)
+		tick := time.Tick(1000 * time.Millisecond)
 		for {
 			select {
 			case <-timeout:
@@ -181,10 +181,10 @@ func testWatch(t *testing.T, kv store.Store) {
 			}
 			eventCount++
 			// We received all the events we wanted to check
-			if eventCount >= 4 {
+			if eventCount >= 3 {
 				return
 			}
-		case <-time.After(4 * time.Second):
+		case <-time.After(10 * time.Second):
 			t.Fatal("Timeout reached")
 			return
 		}

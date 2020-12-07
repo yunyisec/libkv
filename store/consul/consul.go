@@ -8,9 +8,9 @@ import (
 	"sync"
 	"time"
 
+	api "github.com/hashicorp/consul/api"
 	"github.com/rpcxio/libkv"
 	"github.com/rpcxio/libkv/store"
-	api "github.com/hashicorp/consul/api"
 )
 
 const (
@@ -300,7 +300,6 @@ func (s *Consul) Watch(key string, stopCh <-chan struct{}) (<-chan *store.KVPair
 			if err != nil {
 				return
 			}
-
 			// If LastIndex didn't change then it means `Get` returned
 			// because of the WaitTime and the key didn't changed.
 			if opts.WaitIndex == meta.LastIndex {
