@@ -31,7 +31,7 @@ func makeEtcdClient(t *testing.T) store.Store {
 	return kv
 }
 
-func TesttEtcdV3Register(t *testing.T) {
+func TestEtcdV3Register(t *testing.T) {
 	Register()
 
 	kv, err := libkv.NewStore(store.ETCDV3, []string{client}, nil)

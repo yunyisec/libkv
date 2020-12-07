@@ -363,6 +363,7 @@ func (s *EtcdV3) DeleteTree(directory string) error {
 // Pass previous = nil to create a new key.
 func (s *EtcdV3) AtomicPut(key string, value []byte, previous *store.KVPair, options *store.WriteOptions) (bool, *store.KVPair, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), s.timeout)
+	defer cancel()
 
 	var revision int64
 	var presp *clientv3.PutResponse
@@ -397,7 +398,6 @@ func (s *EtcdV3) AtomicPut(key string, value []byte, previous *store.KVPair, opt
 			}
 		}
 	}
-	cancel()
 
 	if err != nil {
 		return false, nil, err
@@ -418,6 +418,8 @@ func (s *EtcdV3) AtomicDelete(key string, previous *store.KVPair) (bool, error) 
 	var err error
 	var txresp *clientv3.TxnResponse
 	ctx, cancel := context.WithTimeout(context.Background(), s.timeout)
+	defer cancel()
+
 	if previous == nil {
 		return false, errors.New("key's version info is needed!")
 	} else {
@@ -434,7 +436,6 @@ func (s *EtcdV3) AtomicDelete(key string, previous *store.KVPair) (bool, error) 
 			err = errors.New("conflicts!")
 		}
 	}
-	cancel()
 
 	if err != nil {
 		return false, err
