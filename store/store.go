@@ -12,12 +12,8 @@ type Backend string
 const (
 	// CONSUL backend
 	CONSUL Backend = "consul"
-	// ETCD backend
-	ETCD Backend = "etcd"
 	// ZK backend
 	ZK Backend = "zk"
-	// ETCDV3 backend
-	ETCDV3 Backend = "etcdv3"
 	// REDIS backend
 	REDIS Backend = "redis"
 )
