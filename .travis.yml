@@ -11,7 +11,7 @@ services:
 
 before_install:
   # Symlink below is needed for Travis CI to work correctly on personal forks of libkv
-  - ln -s $HOME/gopath/src/github.com/${TRAVIS_REPO_SLUG///libkv/} $HOME/gopath/src/github.com/rpcxio
+  - ln -s $HOME/gopath/src/github.com/${TRAVIS_REPO_SLUG///libkv/} $HOME/gopath/src/github.com/yunyisec
 
 before_script:
   - script/travis_consul.sh 1.9.0
