@@ -46,6 +46,7 @@ type Config struct {
 	PersistConnection bool
 	Username          string
 	Password          string
+	HTTPToken         string
 }
 
 // ClientTLSConfig contains data for a Client TLS configuration in the form
